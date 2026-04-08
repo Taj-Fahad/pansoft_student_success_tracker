@@ -12,61 +12,67 @@ module.exports = {
             configuration: {
                 client: [
                     {
-                        key: "goodAttendanceColorCode",
-                        label: "Hex color code for good attendance",
+                        key: "excellent_performance_color_code",
+                        label: "Hex color code for excellent performance",
                         type: "text",
                         required: false,
                     },
                     {
-                        key: "decentAttendanceColorCode",
-                        label: "Hex color code for decent attendance",
+                        key: "satisfactory_performance_color_code",
+                        label: "Hex color code for satisfactory performance",
                         type: "text",
                         required: false,
                     },
                     {
-                        key: "poorAttendanceColorCode",
-                        label: "Hex color code for bad attendance",
+                        key: "poor_performance_color_code",
+                        label: "Hex color code for poor performance",
                         type: "text",
                         required: false,
                     },
                     {
-                        key: "gpaIncreaseChevronColorCode",
-                        label: "Hex color code for chevron when GPA has increased",
+                        key: "minimum_threshold_for_excellent_performance",
+                        label: "Minimum threshold for excellent performance",
                         type: "text",
-                        required: false,
+                        required: true
                     },
                     {
-                        key: "gpaDecreaseChevronColorCode",
-                        label: "Hex color code for chevron when GPA has decreased",
+                        key: "minimum_threshold_for_satisfactory_performance",
+                        label: "Minimum threshold for satisfactory performance",
                         type: "text",
-                        required: false,
+                        required: true
                     },
                     {
-                        key: "gpaCircleColorCode",
-                        label: "Hex color code for the GPA circle",
+                        key: "minimum_threshold_for_excellent_attendance",
+                        label: "Minimum threshold for excellent attendance",
                         type: "text",
-                        required: false,
+                        required: true
                     },
                     {
-                        key: "academicPerformancePipeline",
+                        key: "minimum_threshold_for_satisfactory_attendance",
+                        label: "Minimum threshold for satisfactory attendance",
+                        type: "text",
+                        required: true
+                    },
+                    {
+                        key: "academic_performance_pipeline",
                         label: "Serverless API name for academic performance pipeline",
                         type: "text",
                         required: true,
                     },
                     {
-                        key: "latestTermInformationPipeline",
+                        key: "latest_term_information_pipeline",
                         label: "Serverless API name for latest term information pipeline",
                         type: "text",
                         required: true,
                     },
                     {
-                        key: "termInformationPipeline",
+                        key: "term_information_pipeline",
                         label: "Serverless API name for term information pipeline",
                         type: "text",
                         required: true,
                     },
                     {
-                        key: "termCodesPipeline",
+                        key: "term_codes_pipeline",
                         label: "Serverless API name for term codes pipeline",
                         type: "text",
                         required: true,

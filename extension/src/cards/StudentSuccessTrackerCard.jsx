@@ -1,27 +1,14 @@
-import { withStyles } from "@ellucian/react-design-system/core/styles";
-import { Typography } from "@ellucian/react-design-system/core";
-import { useCardInfo, useData } from "@ellucian/experience-extension-utils";
-import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
-import SvgHollowCircle from "../components/SvgHollowCircle.jsx";
+import PropTypes from "prop-types";
+
+import { useCardInfo, useData } from "@ellucian/experience-extension-utils";
+
 import useFetch from "../hooks/useFetch.js";
 
-/* ================= CONFIG ================= */
-const TABLE_CONFIG = {
-  attendanceGood: 75,
-  attendanceWarning: 60,
-};
+import { withStyles } from "@ellucian/react-design-system/core/styles";
+import { Typography } from "@ellucian/react-design-system/core";
 
-const COLOR_CONFIG = {
-  ON_TRACK: "#34930E",
-  NEEDS_ATTENTION: "#F3C60F",
-  CRITICAL: "#ED1012",
-};
-
-const GPA_CONFIG = {
-  GOOD: 3.5,
-  MEDIUM: 3.0,
-};
+import SvgHollowCircle from "../components/SvgHollowCircle.jsx";
 
 const styles = (theme) => ({
   card: {
@@ -158,18 +145,51 @@ const getStatusColor = (value) => {
   return COLOR_CONFIG.CRITICAL;
 };
 
-const getGpaCircleColor = (gpa) => {
-  if (gpa === null || gpa === undefined || gpa === 0) return "#999";
-  if (gpa >= GPA_CONFIG.GOOD) return COLOR_CONFIG.ON_TRACK;
-  if (gpa >= GPA_CONFIG.MEDIUM) return COLOR_CONFIG.NEEDS_ATTENTION;
-  return COLOR_CONFIG.CRITICAL;
+const get_performance_color = (performance_metric, minimum_threshold_for_excellent_performance, minimum_threshold_for_satisfactory_performance, excellent_performance_color_code, satisfactory_performance_color_code, poor_performance_color_code) => {
+  if (performance >= minimum_threshold_for_excellent_performance){
+    return excellent_performance_color_code;
+  } else if(performance <= minimum_threshold_for_satisfactory_performance){
+    return satisfactory_performance_color_code;
+  } else {
+    return poor_performance_color_code;
+  }
 };
 
 /* ================= COMPONENT ================= */
-const MySuccessTrackerCard = ({ classes }) => {
+const StudentSuccessTracker = ({ classes }) => {
   const { authenticatedEthosFetch } = useData();
+
   const { cardId, cardConfiguration } = useCardInfo();
-  const latestTermInformationPipeline = cardConfiguration?.latestTermInformationPipeline;
+  const { excellent_performance_color_code, satisfactory_performance_color_code, poor_performance_color_code, minimum_threshold_for_excellent_performance, minimum_threshold_for_satisfactory_performance, minimum_threshold_for_excellent_attendance, minimum_threshold_for_satisfactory_attendance, latest_term_information_pipeline } = cardConfiguration;
+
+  if (minimum_threshold_for_excellent_performance <= minimum_threshold_for_satisfactory_performance){
+    throw new Error("Invalid performance configuration")
+  }
+
+  if (minimum_threshold_for_excellent_attendance <= minimum_threshold_for_satisfactory_attendance){
+    throw new Error("Invalid attendance performance configuration")
+  }
+
+  // Helper functions
+    const get_gpa_color = (gpa) => {
+    if (gpa >= minimum_threshold_for_excellent_performance){
+      return excellent_performance_color_code;
+    } else if(gpa <= minimum_threshold_for_satisfactory_performance){
+      return satisfactory_performance_color_code;
+    } else {
+      return poor_performance_color_code;
+    }
+  };
+
+  const get_attendance_color = (attendance) => {
+    if (attendance >= minimum_threshold_for_excellent_attendance){
+      return excellent_performance_color_code;
+    } else if (attendance >= minimum_threshold_for_satisfactory_attendance){
+      return satisfactory_performance_color_code;
+    } else {
+      return poor_performance_color_code;
+    }
+  }
 
   const [currentGpa, setCurrentGpa]       = useState(0);
   const [termName, setTermName]           = useState("");
@@ -181,7 +201,7 @@ const MySuccessTrackerCard = ({ classes }) => {
     authenticatedEthosFetch,
     cardId,
     null,
-    latestTermInformationPipeline,
+    latest_term_information_pipeline,
     {},
   );
 
@@ -195,8 +215,8 @@ const MySuccessTrackerCard = ({ classes }) => {
     setAvgAttendance(data.averageAttendancePercentage ?? null);
   }, [data]);
 
-  const gpaCircleColor        = getGpaCircleColor(currentGpa);
-  const attendanceCircleColor = getStatusColor(avgAttendance);
+  const gpa_circle_color = get_gpa_color(gpa);
+  const attendance_circle_color = get_attendance_color(avgAttendance);
 
   return (
     <div className={classes.card}>
@@ -282,8 +302,8 @@ const MySuccessTrackerCard = ({ classes }) => {
   );
 };
 
-MySuccessTrackerCard.propTypes = {
+StudentSuccessTracker.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(MySuccessTrackerCard);
+export default withStyles(styles)(StudentSuccessTracker);
